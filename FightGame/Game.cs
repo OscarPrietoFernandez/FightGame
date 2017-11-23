@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FightGame.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,11 +7,7 @@ using System.Threading.Tasks;
 namespace FightGame
 {
     public class Game
-    {
-        public const int DefaultLives = 2;
-        public const int DefaultPower = 10;
-        public static int LastId = 0;
-
+    {   
         public List<Player> Players { get; set; }
 
         private Random _random = new Random(DateTime.Now.Millisecond);
@@ -25,7 +22,7 @@ namespace FightGame
  |    __)  |  |/ ___\|  |  \   __\ /   \  ___\__  \  /     \_/ __ \ 
  |     \   |  / /_/  >   Y  \  |   \    \_\  \/ __ \|  Y Y  \  ___/ 
  \___  /   |__\___  /|___|  /__|    \______  (____  /__|_|  /\___  >
-     \/      /_____/      \/               \/     \/      \/     \/  by Oscar", ConsoleColor.Red);
+     \/      /_____/      \/               \/     \/      \/     \/  by Oscar", ConsoleColor.DarkYellow);
 
             IPlayerService playerService = new ApiPlayerService();
             Players = playerService.GetPlayers();
@@ -112,11 +109,11 @@ namespace FightGame
 
             var player = new Player
             {
-                Id = ++LastId,
+                Id = ++GameModel.LastId,
                 Gender = gender.Value,
                 Name = name,
-                Power = DefaultPower,
-                Lives = DefaultLives
+                Power = GameModel.DefaultPower,
+                Lives = GameModel.DefaultLives
             };
 
             Players.Add(player);
@@ -159,7 +156,7 @@ namespace FightGame
             {
                 player2.Lives--;
                 player2.Power = player2.Lives > 0 
-                    ? DefaultPower 
+                    ? GameModel.DefaultPower 
                     : 0;
 
                 if (player2.Lives > 0)
@@ -222,7 +219,10 @@ namespace FightGame
 
                 foreach (var player in ordered)
                 {
-                    player.Status();
+                    var status = player.Status();
+                    var color = player.Lives > 0 ? ConsoleColor.White : ConsoleColor.Red;
+
+                    ConsoleHelper.Write(status, color);
                 }
             }
         }
