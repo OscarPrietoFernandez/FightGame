@@ -12,10 +12,11 @@ namespace FightGame
         private static List<Player> _players = new List<Player>();
 
         private const string ApiUrl = "https://swapi.co/api/people/";
+        private Player player;
 
         public Player AddPlayer(Player player)
         {
-            player.Id = _players.Max(x => x.Id) + 1;
+            player.Id = GetPlayers().Max(x => x.Id) + 1;
             _players.Add(player);
 
             return player;
@@ -28,6 +29,8 @@ namespace FightGame
 
         public List<Player> GetPlayers()
         {
+            //throw new Exception("no quiero funcionar");
+
             if(!_players.Any())
             {
                 var httpClient = new HttpClient();
@@ -60,11 +63,17 @@ namespace FightGame
                 matching.Power = player.Power;
                 matching.Name = player.Name;
                 matching.Gender = player.Gender;
-
+                matching.Gems = player.Gems;
                 return matching;
             }
 
             throw new Exception("Jugador no encontrado");
+        }
+
+        public void Delete(int id)
+        {
+            var players = _players.First(x => x.Id == id);
+            _players.Remove(player);
         }
     }
 }
