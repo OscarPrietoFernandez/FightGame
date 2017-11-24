@@ -1,21 +1,16 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FightGame
 {
-    public class StarWarsPeople
+    public class StartWarsPeople
     {
-        public List<Person> results { get; set; }
-        public StarWarsPeople DeserializeObject { get; internal set; }
+        [JsonProperty("results")]
+        public List<Person> Results { get; set; }
     }
 
     public class Person
     {
-        internal string gender;
-        internal string name;
-
         [JsonProperty("name")]
         public string PlayerName { get; set; }
 

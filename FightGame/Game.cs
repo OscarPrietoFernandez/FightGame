@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 namespace FightGame
 {
     public class Game
-    {   
-        public List<Player> Players { get; set; }
+    {
+        private IPlayerService _playerService;
 
         private Random _random = new Random(DateTime.Now.Millisecond);
         
-
         public Game()
         {
             // Generador de arte ascii: http://patorjk.com/software/taag/#p=display&f=Graffiti&t=Fight%20Game
@@ -22,11 +21,9 @@ namespace FightGame
  |    __)  |  |/ ___\|  |  \   __\ /   \  ___\__  \  /     \_/ __ \ 
  |     \   |  / /_/  >   Y  \  |   \    \_\  \/ __ \|  Y Y  \  ___/ 
  \___  /   |__\___  /|___|  /__|    \______  (____  /__|_|  /\___  >
-     \/      /_____/      \/               \/     \/      \/     \/  by Oscar", ConsoleColor.DarkYellow);
+     \/      /_____/      \/               \/     \/      \/     \/  by Diego", ConsoleColor.Cyan);
 
-            IPlayerService playerService = new ApiPlayerService();
-            Players = playerService.GetPlayers();
-
+            _playerService = new StarwarsPlayerService();
         }
 
         public void Run()
@@ -109,21 +106,20 @@ namespace FightGame
 
             var player = new Player
             {
-                Id = ++GameModel.LastId,
                 Gender = gender.Value,
                 Name = name,
                 Power = GameModel.DefaultPower,
                 Lives = GameModel.DefaultLives
             };
 
-            Players.Add(player);
+            _playerService.AddPlayer(player);
 
             ConsoleHelper.Write($"\n{player.Name} ha sido añadido", ConsoleColor.Yellow);
         }
 
         public void Fight()
         {
-            var currentPlayers = Players
+            var currentPlayers = _playerService.GetPlayers()
                 .Where(x => x.Lives > 0)
                 .ToList();
 
@@ -188,7 +184,7 @@ namespace FightGame
                 }
 
                 // comprobar si hay ganador
-                if(Players.Count(x => x.Lives > 0) == 1)
+                if(_playerService.GetPlayers().Count(x => x.Lives > 0) == 1)
                 {
                     Console.WriteLine("\n\n+============================================+");
                     Console.WriteLine("+============================================+");
@@ -203,16 +199,18 @@ namespace FightGame
 
         public void Status()
         {
-            if (Players.Count == 0)
+            var players = _playerService.GetPlayers();
+
+            if (players.Count == 0)
             {
                 Console.WriteLine("\nNo hay jugadores");
             }
             else
             {
-                Console.WriteLine($"\nNombre\t\t\tId\tVidas\tPoder\tGemas\tSexo");
-                Console.WriteLine($"--------------------------------------------------------");
+                Console.WriteLine($"\n{"Nombre".PadRight(20)}\t\tId\tVidas\tPoder\tGemas\tSexo");
+                Console.WriteLine($"---------------------------------------------------------------------");
                 
-                var ordered = Players
+                var ordered = players
                     .OrderByDescending(player => player.Lives)
                     .ThenByDescending(x => x.Power)
                     .ThenByDescending(x => x.Gems);

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace FightGame
+﻿namespace FightGame
 {
     public class Player
     {
@@ -17,7 +15,7 @@ namespace FightGame
                 ? "Hombre"
                 : "Mujer";
 
-            return $"{Name.PadRight(15)}\t\t{Id}\t{Lives}\t{Power}\t{Gems}\t{genderDisplay}";
+            return $"{Name.PadRight(20)}\t\t{Id}\t{Lives}\t{Power}\t{Gems}\t{genderDisplay}";
         }
     }
 }
